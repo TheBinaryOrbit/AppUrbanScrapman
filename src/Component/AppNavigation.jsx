@@ -29,7 +29,7 @@ const MainNavigation = () => {
           }
           return <Icons name={iconName} size={20} color={color} />;
         },
-        tabBarActiveTintColor: '#4CAF50',
+        tabBarActiveTintColor: '#018b3b',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
       })}

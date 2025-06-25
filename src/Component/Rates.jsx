@@ -17,15 +17,12 @@ const Rates = () => {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        console.log("getting")
         const res = await axios.get(`${url}/api/v1/urbanscrapman/scrab/getrates`)
-        console.log("geted")
-        console.log(res.data)
+    
         setRates(res.data)
         setIsLoadin(false)
       } catch (e) {
-        console.log("got error")
-        console.log(e.res.data.error)
+
         setError(true)
         setIsLoadin(false)
       }

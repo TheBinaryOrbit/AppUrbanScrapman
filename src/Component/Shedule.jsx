@@ -9,6 +9,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { url } from '../URL';
+import Mapview from 'react-native-maps'
 
 const Schedule = () => {
   const navigation = useNavigation();
@@ -35,23 +36,23 @@ const Schedule = () => {
       setShowAlert(true);
     } else {
       console.log('start')
-      try{
+      try {
         const id = (JSON.parse(await AsyncStorage.getItem('user'))).id
         console.log(id)
         const details = {
-          weight : weight,
-          pickUpDate : date.toDateString(),
-          timeSlot : timeSlot,
-          address : address,
-          pinCode : pinCode,
-          landMark : landmark,
-          createdBy : id
+          weight: weight,
+          pickUpDate: date.toDateString(),
+          timeSlot: timeSlot,
+          address: address,
+          pinCode: pinCode,
+          landMark: landmark,
+          createdBy: id
         }
         console.log(details)
-        const res = await axios.post(`${url}/api/v1/urbanscrapman/shedule/sheduleapickup` , details)
-        
+        const res = await axios.post(`${url}/api/v1/urbanscrapman/shedule/sheduleapickup`, details)
+
         console.log(res.data)
-        if(res.status = 201){
+        if (res.status = 201) {
           setAlertMessage('Pickup Sheduled Sucessfully');
           setShowAlert(true);
           setAddress('');
@@ -61,12 +62,12 @@ const Schedule = () => {
           setLandmark('');
           setDate(new Date());
         }
-        else{
+        else {
           console.log('else condition')
           setAlertMessage(res.data.error);
           setShowAlert(true);
         }
-      }catch(e){
+      } catch (e) {
         console.log('in error')
         console.log(e)
         setAlertMessage(e.res.data.error);
@@ -84,105 +85,112 @@ const Schedule = () => {
         </TouchableOpacity>
       </View>
       <ScrollView>
-      <View style={styles.form}>
-        {/* Weight Dropdown */}
-        <Text style={styles.label}>Estimated Weight (kg):</Text>
-        <View
-          style={{
-            marginBottom: 20,
-            borderRadius: 12,
-            overflow: 'hidden',
-            borderWidth: 1,
-            borderColor: '#ccc',
-          }}>
-          <RNPickerSelect
-            onValueChange={(value) => setWeight(value)}
-            value={weight}
-            style={pickerStyles}
-            items={[
-              { label: '20-40 kg', value: '20-40kg' },
-              { label: '40-80 kg', value: '40-80kg' },
-              { label: '80-200 kg', value: '80-200kg' },
-              { label: '200-500 kg', value: '200-500kg' },
-            ]}
+        <View style={styles.form}>
+          {/* Weight Dropdown */}
+          <Text style={styles.label}>Estimated Weight (kg):</Text>
+          <View
+            style={{
+              marginBottom: 20,
+              borderRadius: 12,
+              overflow: 'hidden',
+              borderWidth: 1,
+              borderColor: '#ccc',
+            }}>
+            <RNPickerSelect
+              onValueChange={(value) => setWeight(value)}
+              value={weight}
+              style={pickerStyles}
+              placeholder={{
+                "label": "Select Estimated Weight",
+              }}
+              items={[
+                { label: '20-40 kg', value: '20-40kg' },
+                { label: '40-80 kg', value: '40-80kg' },
+                { label: '80-200 kg', value: '80-200kg' },
+                { label: '200-500 kg', value: '200-500kg' },
+              ]}
+            />
+          </View>
+
+          {/* Date Picker */}
+          <Text style={styles.label}>Pickup Date:</Text>
+          <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
+            <Text style={styles.buttonText}>{date.toDateString()}</Text>
+          </TouchableOpacity>
+          {showDatePicker && (
+            <DateTimePicker
+              mode="date"
+              value={date}
+              onChange={handleDateChange}
+              minimumDate={new Date()} // Prevent past dates
+            />
+          )}
+
+          {/* Time Slot Dropdown */}
+          <Text style={styles.label}>Pickup Time Slot:</Text>
+          <View
+            style={{
+              marginBottom: 20,
+              borderRadius: 12,
+              overflow: 'hidden',
+              borderWidth: 1,
+              borderColor: '#ccc',
+            }}>
+            <RNPickerSelect
+              onValueChange={(value) => setTimeSlot(value)}
+              value={timeSlot}
+              style={pickerStyles}
+              placeholder={{
+                "label": "Select a Time Slot",
+              }}
+              items={[
+                { label: '9 AM - 12 PM', value: '9 AM - 12 PM' },
+                { label: '12 PM - 3 PM', value: '12 PM - 3 PM' },
+                { label: '3 PM - 6 PM', value: '3 PM - 6 PM' },
+              ]}
+            />
+          </View>
+
+          {/* Address Input */}
+          <Text style={styles.label}>Pickup Address:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your address"
+            value={address}
+            onChangeText={setAddress}
           />
+
+
+          <Text style={styles.label}>Pincode</Text>
+          <TextInput
+            keyboardType='numeric'
+            style={styles.input}
+            placeholder="Enter your Pincode"
+            value={pinCode}
+            onChangeText={setPinCode}
+            maxLength={6}
+          />
+
+
+          <Text style={styles.label}>Landmark:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your address"
+            value={landmark}
+            onChangeText={setLandmark}
+          />
+
+
+          {/* Submit Button */}
+          <TouchableOpacity
+            style={[styles.button, styles.submitButton]}
+            onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Schedule Pickup</Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Date Picker */}
-        <Text style={styles.label}>Pickup Date:</Text>
-        <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
-          <Text style={styles.buttonText}>{date.toDateString()}</Text>
-        </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            mode="date"
-            value={date}
-            onChange={handleDateChange}
-            minimumDate={new Date()} // Prevent past dates
-          />
-        )}
-
-        {/* Time Slot Dropdown */}
-        <Text style={styles.label}>Pickup Time Slot:</Text>
-        <View
-          style={{
-            marginBottom: 20,
-            borderRadius: 12,
-            overflow: 'hidden',
-            borderWidth: 1,
-            borderColor: '#ccc',
-          }}>
-          <RNPickerSelect
-            onValueChange={(value) => setTimeSlot(value)}
-            value={timeSlot}
-            style={pickerStyles}
-            items={[
-              { label: '9 AM - 12 PM', value: '9 AM - 12 PM' },
-              { label: '12 PM - 3 PM', value: '12 PM - 3 PM' },
-              { label: '3 PM - 6 PM', value: '3 PM - 6 PM' },
-            ]}
-          />
-        </View>
-
-        {/* Address Input */}
-        <Text style={styles.label}>Pickup Address:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your address"
-          value={address}
-          onChangeText={setAddress}
-        />
-
-
-        <Text style={styles.label}>Pincode</Text>
-        <TextInput
-          keyboardType='numeric'
-          style={styles.input}
-          placeholder="Enter your Pincode"
-          value={pinCode}
-          onChangeText={setPinCode}
-          maxLength={6}
-        />
-
-
-        <Text style={styles.label}>Landmark:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your address"
-          value={landmark}
-          onChangeText={setLandmark}
-        />
-
-        {/* Submit Button */}
-        <TouchableOpacity
-          style={[styles.button, styles.submitButton]}
-          onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Schedule Pickup</Text>
-        </TouchableOpacity>
-      </View>
       </ScrollView>
 
-      {/* Custom Alert Dialog */}
+
       <AwesomeAlert
         show={showAlert}
         title={alertMessage === 'Please fill in all fields!' ? 'Error' : 'Success'}
@@ -192,7 +200,7 @@ const Schedule = () => {
         showCancelButton={false}
         showConfirmButton={true}
         confirmText="OK"
-        confirmButtonColor={alertMessage === 'Please fill in all fields!' ? '#f44336' : '#4CAF50'}
+        confirmButtonColor={alertMessage === 'Please fill in all fields!' ? '#f44336' : '#018b3b'}
         onConfirmPressed={() => setShowAlert(false)}
       />
     </View>
@@ -243,7 +251,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#018b3b',
     paddingVertical: 10,
     alignItems: 'center',
     borderRadius: 12,

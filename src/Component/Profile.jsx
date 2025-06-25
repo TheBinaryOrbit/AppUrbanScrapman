@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { Link, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image , Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
 
@@ -13,7 +13,6 @@ const Profile = () => {
   useEffect(() => {
     const fetchdata = (async () => {
       const u = JSON.parse(await AsyncStorage.getItem('user'))
-      console.log(u)
       setUserData(u)
     })();
   },[])
@@ -48,23 +47,29 @@ const Profile = () => {
         <Text style={styles.role}>{userData.name}@urbanscrapman.user</Text>
 
         <View style={styles.socialIcons}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=> Linking.openURL('https://www.facebook.com/urbanscrapman')}>
             <Icon name="facebook" size={20} style={styles.icon} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=> Linking.openURL('https://x.com/urbanscrapman')}>
             <Icon name="twitter" size={20} style={styles.icon} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=> Linking.openURL('https://www.instagram.com/urbanscrapman/')}>
             <Icon name="instagram" size={20} style={styles.icon} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=> Linking.openURL('https://www.youtube.com/@UrbanScrapman')}>
             <Icon name="youtube" size={20} style={styles.icon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=> Linking.openURL('https://www.linkedin.com/showcase/urbanscrapman/')}>
+            <Icon name="linkedin" size={20} style={styles.icon} />
           </TouchableOpacity>
         </View>
 
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Pickup')}>
-            <Text style={styles.buttonText}>Your Pickups</Text>
+          <TouchableOpacity style={styles.button} onPress={() => Linking.openURL('https://wa.me/+919429691298')}>
+            <Text style={styles.buttonText}>Chat with us</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{...styles.button , backgroundColor : 'white' ,  borderWidth : 2 , borderColor : '#018b3b'}} onPress={() => Linking.openURL('tel:+91 9429691298')}>
+            <Text style={{...styles.buttonText , color : '#018b3b'}}>Call Us</Text>
           </TouchableOpacity>
         </View>
 
@@ -120,7 +125,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 3,
-    borderColor: '#4CAF50',
+    borderColor: '#018b3b',
     marginBottom: 10,
   },
   name: {
@@ -139,14 +144,14 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginHorizontal: 10,
-    color: '#4CAF50',
+    color: '#018b3b',
   },
   buttons: {
     flexDirection: 'row',
     marginVertical: 15,
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#018b3b',
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 20,

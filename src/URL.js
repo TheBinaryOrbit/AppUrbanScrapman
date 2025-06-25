@@ -1,1 +1,1 @@
-export const url = "https://urbanscrapman-production.up.railway.app"
+export const url = "https://api.urbanscrapman.com"
